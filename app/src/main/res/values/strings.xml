@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Demo_List_Tweets</string>
+    <string name="token">AAAAAAAAAAAAAAAAAAAAAP6MNwEAAAAATBEcA7AwavC3m8P5fdvH74Xbz2g%3D1Kdy946kvXTzarBfc1Dx67wcotyYTaqPXo61BCAEaS5HROcgrE</string>
+    <string name="api_url">https://api.twitter.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

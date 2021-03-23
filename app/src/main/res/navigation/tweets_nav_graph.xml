@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tweets_nav_graph"
+    app:startDestination="@+id/scooterMapFragment">
+    <fragment
+        android:id="@+id/scooterMapFragment"
+        android:name="com.example.demo_list_tweets.presentation.searchtweets.SearchTweetsFragment"
+        android:label="fragment_included_start"
+        tools:layout="@layout/fragment_search_tweets" >
+    </fragment>
+</navigation>
