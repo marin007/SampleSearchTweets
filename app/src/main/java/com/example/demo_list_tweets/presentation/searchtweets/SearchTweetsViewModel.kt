@@ -1,10 +1,10 @@
 package com.example.demo_list_tweets.presentation.searchtweets
 
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.demo_list_tweets.data.interceptors.NoConnectionInterceptor
 import com.example.demo_list_tweets.domain.entity.Tweet
 import com.example.demo_list_tweets.domain.usecases.GetTweetByKeywordUseCase
 import com.example.demo_list_tweets.presentation.common.ValueWrapper
@@ -27,14 +27,14 @@ class SearchTweetsViewModel(private val tweetRepository: GetTweetByKeywordUseCas
 
     var keyword: ObservableField<String> = ObservableField()
 
+    var showLoader: ObservableBoolean = ObservableBoolean(false)
+
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        if (throwable is NoConnectionInterceptor.NoConnectivityException || throwable is NoConnectionInterceptor.NoInternetException) {
-            event.value = ValueWrapper(
-                Event.Error(
-                    throwable.localizedMessage
-                )
+        event.value = ValueWrapper(
+            Event.Error(
+                throwable.message
             )
-        }
+        )
     }
 
     fun searchTweet() {
@@ -47,13 +47,7 @@ class SearchTweetsViewModel(private val tweetRepository: GetTweetByKeywordUseCas
     fun getTweets(keyword: String) {
         uiState.value = ValueWrapper(UiState.FetchingTweets)
         viewModelScope.launch(coroutineExceptionHandler) {
-            val tweetsResponse = tweetRepository.getTweetsByKeyWordAsync(keyword).await()
-            when (tweetsResponse.isSuccessful) {
-                true -> tweets.value = tweetsResponse.body()
-                else -> event.value = ValueWrapper(
-                    Event.Error()
-                )
-            }
+            tweets.value = tweetRepository.getTweetsByKeyWordAsync(keyword = keyword, tweetsCount = TWEETS_COUNT, language = LANGUAGE)
         }
     }
 
@@ -62,7 +56,12 @@ class SearchTweetsViewModel(private val tweetRepository: GetTweetByKeywordUseCas
     }
 
     sealed class Event {
-        data class Error(val message: String? = null) : Event()
+        data class Error(val message: String?) : Event()
         data class SearchTweets(val keyword: String) : Event()
+    }
+
+    companion object {
+        const val TWEETS_COUNT = 100
+        const val LANGUAGE = "en"
     }
 }

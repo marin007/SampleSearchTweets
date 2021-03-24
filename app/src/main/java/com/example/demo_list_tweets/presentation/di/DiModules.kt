@@ -30,10 +30,10 @@ val viewModelsModule: Module = module {
 }
 
 val repositoriesModule: Module = module {
-    single { createGlobalCommonRepository(get()) }
+    single { createTweetsRepository(get()) }
 }
 
-fun createGlobalCommonRepository(remoteApi: TweetsRemoteApi): TweetRepository {
+fun createTweetsRepository(remoteApi: TweetsRemoteApi): TweetRepository {
     return TweetsRemoteApiImpl(
         remoteApi
     )
@@ -92,7 +92,5 @@ val networkModule = module {
             .build()
     }
     single { get<Retrofit>().create(TweetsRemoteApi::class.java) }
-
-
 }
 

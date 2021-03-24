@@ -9,6 +9,7 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
+@Suppress("DEPRECATION")
 class NoConnectionInterceptor (private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return if (!isConnectionOn()) {
@@ -60,7 +61,7 @@ class NoConnectionInterceptor (private val context: Context) : Interceptor {
             get() = "No network available, please check your WiFi or Data connection"
     }
 
-    class NoInternetException() : IOException() {
+    class NoInternetException : IOException() {
         override val message: String
             get() = "No internet available, please check your connected WIFi or Data"
     }

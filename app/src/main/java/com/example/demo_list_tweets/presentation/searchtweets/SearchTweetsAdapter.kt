@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -15,7 +16,8 @@ import com.example.demo_list_tweets.domain.entity.TweetContainer
 
 class SearchTweetsAdapter(
     private val tweets: List<TweetContainer>,
-    private val context: Context
+    private val context: Context,
+    private val openTweetInBrowser: (url: String) -> Unit
 ) : RecyclerView.Adapter<SearchTweetsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -28,20 +30,37 @@ class SearchTweetsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //holder.itemView.setOnClickListener { onScooterItemClickedListener.onScooterClicked(getItem(position)) }
         val text: String? = tweets[position].text
-        val imageURL: String? = tweets[position].user.profile_image_url_https
+        val imageURL: String? = tweets[position].user?.profile_image_url_https
+        tweets[position].entities?.let { entities ->
+            entities.urls?.let { urls ->
+                if (urls.count() > 0) {
+                    urls[0].expanded_url?.let { url ->
+                        if (android.util.Patterns.WEB_URL.matcher(url).matches()) {
+                            holder.constraintLayoutRowWrapper.setOnClickListener {
+                                openTweetInBrowser(url)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         holder.textViewTweetText.text = text
         imageURL?.let {
             Glide.with(context).load(it).apply(
-                RequestOptions.bitmapTransform(RoundedCorners(35))).into(holder.imageView);
+                RequestOptions.bitmapTransform(RoundedCorners(ROUNDING_PERCENT))
+            ).into(holder.imageView)
         }
     }
 
     override fun getItemCount(): Int = tweets.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        val constraintLayoutRowWrapper: ConstraintLayout =
+            view.findViewById(R.id.rowWrapper)
+
         val textViewTweetText: TextView =
             view.findViewById(R.id.tweetText)
 
@@ -49,12 +68,7 @@ class SearchTweetsAdapter(
             view.findViewById(R.id.imageView)
     }
 
-    private fun getItem(position: Int): TweetContainer {
-        return tweets[position]
+    companion object {
+        const val ROUNDING_PERCENT = 100
     }
-
-
-//    interface OnScooterItemClickedListener {
-//        fun onScooterClicked(vehicle: VehicleDomainModel)
-//    }
 }

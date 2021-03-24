@@ -7,12 +7,12 @@ data class Tweet(
 data class TweetContainer(
     val id: String?,
     val text: String?,
-    val entities: Entities,
-    val user: User
+    val entities: Entities?,
+    val user: User?
 )
 
 data class Entities(
-    val urls: List<URLs>
+    val urls: List<URLs>?
 )
 
 data class URLs(
