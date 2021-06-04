@@ -24,7 +24,7 @@ class SearchTweetsFragment : BaseFragment<FragmentSearchTweetsBinding, SearchTwe
     }
 
     override fun subscribeToUiChanges() {
-        viewModel.uiState.observe(this, { state ->
+        viewModel.uiState.observe(viewLifecycleOwner, { state ->
             state.get()?.let {
                 when (it) {
                     is SearchTweetsViewModel.UiState.FetchingTweets -> {
@@ -36,7 +36,7 @@ class SearchTweetsFragment : BaseFragment<FragmentSearchTweetsBinding, SearchTwe
     }
 
     override fun subscribeToEvents() {
-        viewModel.event.observe(this, { event ->
+        viewModel.event.observe(viewLifecycleOwner, { event ->
             event.get()?.let {
                 when (it) {
                     is SearchTweetsViewModel.Event.Error -> it.message?.let { message ->
@@ -50,7 +50,7 @@ class SearchTweetsFragment : BaseFragment<FragmentSearchTweetsBinding, SearchTwe
                 }
             }
         })
-        viewModel.tweets.observe(this) {
+        viewModel.tweets.observe(viewLifecycleOwner) {
             val adapter = SearchTweetsAdapter(it.statuses, secureContext, ::openTweetInBrowser)
             binding.recyclerView.adapter = adapter
             binding.recyclerView.adapter?.notifyDataSetChanged()
